@@ -2,19 +2,25 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 function Square(props) {
-    return (
-      <button className="square" onClick={props.onClick}>
-        {props.value}
-      </button>
-    );
-  }
+    const winningSquareStyle = {
+        backgroundColor: '#adff2f'
+      };
+    
+      return (
+        <button className="square" onClick={props.onClick} style={props.winningSquare ? winningSquareStyle : null}>
+          {props.value}
+        </button>
+      );
+    }
   
   class Board extends React.Component {
     renderSquare(i) {
+    let winningSquare = this.props.winner && this.props.winner.includes(i) ? true : false;
       return (
         <Square
           value={this.props.squares[i]}
           onClick={() => this.props.onClick(i)}
+          winningSquare = {winningSquare}
         />
       );
     }
@@ -106,6 +112,7 @@ function Square(props) {
             <Board
               squares={current.squares}
               onClick={(i) => this.handleClick(i)}
+              winner={winner && winner.winningSquares}
             />
           </div>
           <div className="game-info">
@@ -138,7 +145,10 @@ function Square(props) {
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
       if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-        return squares[a];
+        return{
+            winner: squares[a],
+        winningSquares: lines[i]
+        };
       }
     }
     return null;
